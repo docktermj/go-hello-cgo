@@ -5,8 +5,9 @@ package main
 #include <stdlib.h>
 #include <stdio.h>
 #include "lib/greeter.h"
+#include "lib/greeter.c"
 #include "lib/greeter2.h"
-#cgo LDFLAGS: -L/home/senzing/docktermj.git/go-hello-cgo/lib -lgreeter
+#include "lib/greeter2.c"
 */
 import "C"
 import (
@@ -15,7 +16,7 @@ import (
 )
 
 func regreet() {
-	name := C.CString("Gopher")
+	name := C.CString("Gopher2")
 	defer C.free(unsafe.Pointer(name))
 
 	year := C.int(2018)

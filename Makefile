@@ -29,7 +29,7 @@ greeter.o:
 	  lib/greeter.c
 
 greeter2.o:
-	@(CC) \
+	@$(CC) \
 	  -c \
 	  -o lib/greeter2.o \
 	  lib/greeter2.c
