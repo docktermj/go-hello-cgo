@@ -11,7 +11,6 @@ Show how to use go's `cgo`.
     1. [Clone repository](#clone-repository)
     1. [Set environment variables](#set-environment-variables)
 1. [Development](#development)
-    1. [Download dependencies](#download-dependencies)
     1. [Build](#build)
     1. [Run](#run)
     1. [Test](#test)
@@ -61,16 +60,6 @@ The following software programs need to be installed:
 
 ## Development
 
-### Download dependencies
-
-1. Dependencies.
-   Example:
-
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make dependencies
-    ```
-
 ### Build
 
 1. Set environment variables.
@@ -79,6 +68,14 @@ The following software programs need to be installed:
     ```console
     export CGO_CFLAGS="-I${GIT_REPOSITORY_DIR}/lib"
     export CGO_LDFLAGS="-L${GIT_REPOSITORY_DIR}/lib -lgreeter"
+    ```
+
+1. Dependencies.
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make dependencies
     ```
 
 1. Build.
