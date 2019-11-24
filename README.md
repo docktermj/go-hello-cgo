@@ -77,8 +77,8 @@ The following software programs need to be installed:
    Example:
 
     ```console
-    export CGO_LDFLAGS="-L${GIT_REPOSITORY_DIR}/lib"
-
+    export CGO_CFLAGS="-I${GIT_REPOSITORY_DIR}/lib"
+    export CGO_LDFLAGS="-L${GIT_REPOSITORY_DIR}/lib -lgreeter"
     ```
 
 1. Build.
@@ -96,6 +96,13 @@ The following software programs need to be installed:
 
 1. Run.
    Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make run
+    ```
+
+    or
 
     ```console
     ${GIT_REPOSITORY_DIR}/target/linux/go-hello-world

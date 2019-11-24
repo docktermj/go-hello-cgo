@@ -2,8 +2,6 @@ package main
 
 /*
 #cgo CFLAGS: -g -Wall
-#cgo CFLAGS: -I/home/senzing/docktermj.git/go-hello-cgo/lib
-#cgo LDFLAGS: -L/home/senzing/docktermj.git/go-hello-cgo/lib -lgreeter
 #include <stdlib.h>
 #include <stdio.h>
 #include "greeter.h"
