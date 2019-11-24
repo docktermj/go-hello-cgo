@@ -56,8 +56,7 @@ The following software programs need to be installed:
    Example:
 
     ```console
-    export GOPATH="${HOME}/go"
-    export PATH="${PATH}:${GOPATH}/bin:/usr/local/go/bin"
+    export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${GIT_REPOSITORY_DIR}/lib"
     ```
 
 ## Development

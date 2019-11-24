@@ -38,20 +38,12 @@ lib/greeter2.o: lib/greeter2.c lib/greeter2.h
 	  lib/greeter2.c
 
 
-lib/greeter.a: lib/greeter.o lib/greeter2.o
-	ar ruv lib/greeter.a lib/greeter.o lib/greeter2.o
-	ranlib lib/greeter.a
-
-
 lib/libgreeter.so: lib/greeter.o lib/greeter2.o
 	$(CC) \
 	  -shared \
 	  -o lib/libgreeter.so \
 	  lib/greeter.o \
 	  lib/greeter2.o
-
-.PHONY: make-c
-make-c: greeter.o lib/greeter.o
 
 # -----------------------------------------------------------------------------
 # Build
@@ -141,6 +133,13 @@ docker-package:
 		.
 
 # -----------------------------------------------------------------------------
+# Run
+# -----------------------------------------------------------------------------
+
+run:
+	@target/linux/go-hello-cgo
+
+# -----------------------------------------------------------------------------
 # Utility targets
 # -----------------------------------------------------------------------------
 
@@ -158,7 +157,8 @@ clean:
 	@go clean -cache
 	@docker rm --force $(DOCKER_CONTAINER_NAME) || true
 	@rm -rf $(TARGET_DIRECTORY) || true
-	@find . -type f -name '*.o' -exec rm {} +   # Remove recursively *.o files
+	@find . -type f -name '*.o' -exec rm {} +    # Remove recursively *.o files
+	@find . -type f -name '*.so' -exec rm {} +   # Remove recursively *.so files
 	@rm -f $(GOPATH)/bin/$(PROGRAM_NAME) || true
 
 
