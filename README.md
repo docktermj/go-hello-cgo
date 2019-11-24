@@ -70,14 +70,6 @@ The following software programs need to be installed:
     export CGO_LDFLAGS="-L${GIT_REPOSITORY_DIR}/lib -lgreeter"
     ```
 
-1. Dependencies.
-   Example:
-
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make dependencies
-    ```
-
 1. Build.
    Example:
 

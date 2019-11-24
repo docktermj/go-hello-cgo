@@ -23,7 +23,7 @@ default: help
 # -----------------------------------------------------------------------------
 
 lib/greeter.o: lib/greeter.c lib/greeter.h
-	$(CC) \
+	@$(CC) \
 	  -c \
 	  -fPIC \
 	  -o lib/greeter.o \
@@ -31,7 +31,7 @@ lib/greeter.o: lib/greeter.c lib/greeter.h
 
 
 lib/greeter2.o: lib/greeter2.c lib/greeter2.h
-	$(CC) \
+	@$(CC) \
 	  -c \
 	  -fPIC \
 	  -o lib/greeter2.o \
@@ -39,7 +39,7 @@ lib/greeter2.o: lib/greeter2.c lib/greeter2.h
 
 
 lib/libgreeter.so: lib/greeter.o lib/greeter2.o
-	$(CC) \
+	@$(CC) \
 	  -shared \
 	  -o lib/libgreeter.so \
 	  lib/greeter.o \
@@ -63,7 +63,7 @@ build: build-linux
 
 .PHONY: build-linux
 build-linux: lib/libgreeter.so
-	go build \
+	@go build \
 	  -a \
 	  -ldflags \
 	    "-X main.programName=${PROGRAM_NAME} \
@@ -71,8 +71,8 @@ build-linux: lib/libgreeter.so
 	     -X main.buildIteration=${BUILD_ITERATION} \
 	    " \
 	  ${GO_PACKAGE_NAME}
-	mkdir -p $(TARGET_DIRECTORY)/linux || true
-	mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux
+	@mkdir -p $(TARGET_DIRECTORY)/linux || true
+	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux
 
 
 .PHONY: build-macos

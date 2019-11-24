@@ -47,7 +47,7 @@ func main() {
 	b := C.GoBytes(ptr, size)
 	fmt.Println(string(b))
 
-	fmt.Println("done")
+	fmt.Println("and")
 
 	regreet()
 }
