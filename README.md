@@ -215,3 +215,5 @@ The following software programs need to be installed:
 ## References
 
 1. [Example cgo (Golang) app that calls a native library with a C structure](http://www.mischiefblog.com/2014/06/26/example-cgo-golang-app-that-calls-a-native-library-with-a-c-structure/) - example doesn't work.
+1. [An Overview of Go's Tooling](https://www.alexedwards.net/blog/an-overview-of-go-tooling)
+    1. The reason for using `go build -a` in

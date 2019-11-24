@@ -22,14 +22,14 @@ default: help
 # C
 # -----------------------------------------------------------------------------
 
-greeter.o:
-	@$(CC) \
+lib/greeter.o: lib/greeter.c lib/greeter.h
+	$(CC) \
 	  -c \
 	  -o lib/greeter.o \
 	  lib/greeter.c
 
-greeter2.o:
-	@$(CC) \
+lib/greeter2.o: lib/greeter2.c lib/greeter2.h
+	$(CC) \
 	  -c \
 	  -o lib/greeter2.o \
 	  lib/greeter2.c
@@ -39,6 +39,8 @@ make-c: greeter.o greeter2.o
 
 # -----------------------------------------------------------------------------
 # Build
+#   Notes:
+#     "-a" needed to incorporate changes to C files.
 # -----------------------------------------------------------------------------
 
 .PHONY: dependencies
@@ -48,12 +50,13 @@ dependencies:
 
 
 .PHONY: build
-build: build-linux build-macos build-windows
+build: build-linux 
 
 
 .PHONY: build-linux
-build-linux:
+build-linux: lib/greeter.o  lib/greeter2.o
 	go build \
+	  -a \
 	  -ldflags \
 	    "-X main.programName=${PROGRAM_NAME} \
 	     -X main.buildVersion=${BUILD_VERSION} \
@@ -136,8 +139,10 @@ docker-run:
 
 .PHONY: clean
 clean:
+	@go clean -cache
 	@docker rm --force $(DOCKER_CONTAINER_NAME) || true
 	@rm -rf $(TARGET_DIRECTORY) || true
+	@find . -type f -name '*.o' -exec rm {} +   # Remove recursively *.o files
 	@rm -f $(GOPATH)/bin/$(PROGRAM_NAME) || true
 
 

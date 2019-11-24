@@ -4,10 +4,10 @@ package main
 #cgo CFLAGS: -g -Wall
 #include <stdlib.h>
 #include <stdio.h>
-#include "lib/greeter.h"
-#include "lib/greeter.c"
-#include "lib/greeter2.h"
-#include "lib/greeter2.c"
+#include "lib3/greeter.h"
+#include "lib3/greeter.c"
+#include "lib3/greeter2.h"
+#include "lib3/greeter2.c"
 */
 import "C"
 import (
