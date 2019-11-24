@@ -25,17 +25,33 @@ default: help
 lib/greeter.o: lib/greeter.c lib/greeter.h
 	$(CC) \
 	  -c \
+	  -fPIC \
 	  -o lib/greeter.o \
 	  lib/greeter.c
+
 
 lib/greeter2.o: lib/greeter2.c lib/greeter2.h
 	$(CC) \
 	  -c \
+	  -fPIC \
 	  -o lib/greeter2.o \
 	  lib/greeter2.c
-	  
+
+
+lib/greeter.a: lib/greeter.o lib/greeter2.o
+	ar ruv lib/greeter.a lib/greeter.o lib/greeter2.o
+	ranlib lib/greeter.a
+
+
+lib/libgreeter.so: lib/greeter.o lib/greeter2.o
+	$(CC) \
+	  -shared \
+	  -o lib/libgreeter.so \
+	  lib/greeter.o \
+	  lib/greeter2.o
+
 .PHONY: make-c
-make-c: greeter.o greeter2.o
+make-c: greeter.o lib/greeter.o
 
 # -----------------------------------------------------------------------------
 # Build
@@ -50,11 +66,11 @@ dependencies:
 
 
 .PHONY: build
-build: build-linux 
+build: build-linux
 
 
 .PHONY: build-linux
-build-linux: lib/greeter.o  lib/greeter2.o
+build-linux: lib/libgreeter.so
 	go build \
 	  -a \
 	  -ldflags \
@@ -152,7 +168,7 @@ print-make-variables:
 	   $(if $(filter-out environment% default automatic, \
 	   $(origin $V)),$(warning $V=$($V) ($(value $V)))))
 
-	   
+
 .PHONY: help
 help:
 	@echo "Build $(PROGRAM_NAME) version $(BUILD_VERSION)-$(BUILD_ITERATION)".
