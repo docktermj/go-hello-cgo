@@ -38,6 +38,10 @@ lib/greeter2.o: lib/greeter2.c lib/greeter2.h
 	  lib/greeter2.c
 
 
+lib/libgreeter.a: lib/greeter.o lib/greeter2.o
+	ar ruv lib/libgreeter.a lib/greeter.o lib/greeter2.o
+	ranlib lib/libgreeter.a
+
 lib/libgreeter.so: lib/greeter.o lib/greeter2.o
 	@$(CC) \
 	  -shared \
@@ -78,15 +82,14 @@ build-linux: lib/libgreeter.so
 	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux
 
 .PHONY: build-static-linux
-build-static-linux: lib/libgreeter.so
+build-static-linux: lib/libgreeter.a
 	go build \
 	  -a \
 	  -ldflags \
-	    '-X main.programName=${PROGRAM_NAME} \
+	    "-X main.programName=${PROGRAM_NAME} \
 	     -X main.buildVersion=${BUILD_VERSION} \
 	     -X main.buildIteration=${BUILD_ITERATION} \
-	     -extldflags "-static" \
-	    ' \
+	    " \
 	  ${GO_PACKAGE_NAME}
 	@mkdir -p $(TARGET_DIRECTORY)/linux || true
 	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux
