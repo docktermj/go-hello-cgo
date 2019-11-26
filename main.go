@@ -13,6 +13,12 @@ import (
 	"unsafe"
 )
 
+// Values updated via "go install -ldflags" parameters.
+
+var programName string = "unknown"
+var buildVersion string = "0.0.0"
+var buildIteration string = "0"
+
 func regreet() {
 	name := C.CString("Gopher2")
 	defer C.free(unsafe.Pointer(name))
@@ -34,6 +40,9 @@ func regreet() {
 }
 
 func main() {
+
+	fmt.Printf("Hello, world! from %s (main) version %s-%s\n", programName, buildVersion, buildIteration)
+
 	name := C.CString("Gopher")
 	defer C.free(unsafe.Pointer(name))
 

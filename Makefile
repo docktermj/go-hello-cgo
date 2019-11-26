@@ -60,6 +60,9 @@ dependencies:
 .PHONY: build
 build: build-linux
 
+.PHONY: build-static
+build-static: build-static-linux
+
 
 .PHONY: build-linux
 build-linux: lib/libgreeter.so
@@ -74,6 +77,19 @@ build-linux: lib/libgreeter.so
 	@mkdir -p $(TARGET_DIRECTORY)/linux || true
 	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux
 
+.PHONY: build-static-linux
+build-static-linux: lib/libgreeter.so
+	go build \
+	  -a \
+	  -ldflags \
+	    '-X main.programName=${PROGRAM_NAME} \
+	     -X main.buildVersion=${BUILD_VERSION} \
+	     -X main.buildIteration=${BUILD_ITERATION} \
+	     -extldflags "-static" \
+	    ' \
+	  ${GO_PACKAGE_NAME}
+	@mkdir -p $(TARGET_DIRECTORY)/linux || true
+	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux
 
 .PHONY: build-macos
 build-macos:
