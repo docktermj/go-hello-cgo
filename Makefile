@@ -83,7 +83,6 @@ build-linux: lib/libgreeter.so
 
 .PHONY: build-static-linux
 build-static-linux: lib/libgreeter.a
-	CGO_ENABLED=0  \
 	go build \
 	  -a \
 	  -ldflags \
