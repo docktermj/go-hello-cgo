@@ -213,3 +213,4 @@ The following software programs need to be installed:
 1. [An Overview of Go's Tooling](https://www.alexedwards.net/blog/an-overview-of-go-tooling)
     1. The reason for using `go build -a` is to avoid caching c binary files.
 1. [Exploring shared objects in Go](https://blog.ksub.org/bytes/2017/02/12/exploring-shared-objects-in-go/)
+1. [Linking golang statically](https://blog.hashbangbash.com/2014/04/linking-golang-statically/)

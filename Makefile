@@ -25,22 +25,25 @@ default: help
 lib/greeter.o: lib/greeter.c lib/greeter.h
 	@$(CC) \
 	  -c \
-	  -static \
+	  -fPIC \
 	  -o lib/greeter.o \
+	  -static \
 	  lib/greeter.c
 
 
 lib/greeter2.o: lib/greeter2.c lib/greeter2.h
 	@$(CC) \
 	  -c \
-	  -static \
+	  -fPIC \
 	  -o lib/greeter2.o \
+	  -static \
 	  lib/greeter2.c
 
 
 lib/libgreeter.a: lib/greeter.o lib/greeter2.o
 	ar ruv lib/libgreeter.a lib/greeter.o lib/greeter2.o
 	ranlib lib/libgreeter.a
+
 
 lib/libgreeter.so: lib/greeter.o lib/greeter2.o
 	@$(CC) \
