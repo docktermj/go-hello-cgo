@@ -25,7 +25,7 @@ default: help
 lib/greeter.o: lib/greeter.c lib/greeter.h
 	@$(CC) \
 	  -c \
-	  -fPIC \
+	  -static \
 	  -o lib/greeter.o \
 	  lib/greeter.c
 
@@ -33,7 +33,7 @@ lib/greeter.o: lib/greeter.c lib/greeter.h
 lib/greeter2.o: lib/greeter2.c lib/greeter2.h
 	@$(CC) \
 	  -c \
-	  -fPIC \
+	  -static \
 	  -o lib/greeter2.o \
 	  lib/greeter2.c
 
@@ -89,6 +89,7 @@ build-static-linux: lib/libgreeter.a
 	    "-X main.programName=${PROGRAM_NAME} \
 	     -X main.buildVersion=${BUILD_VERSION} \
 	     -X main.buildIteration=${BUILD_ITERATION} \
+	     -extldflags \"-static\" \
 	    " \
 	  ${GO_PACKAGE_NAME}
 	@mkdir -p $(TARGET_DIRECTORY)/linux || true
@@ -176,6 +177,7 @@ clean:
 	@go clean -cache
 	@docker rm --force $(DOCKER_CONTAINER_NAME) || true
 	@rm -rf $(TARGET_DIRECTORY) || true
+	@find . -type f -name '*.a' -exec rm {} +    # Remove recursively *.o files
 	@find . -type f -name '*.o' -exec rm {} +    # Remove recursively *.o files
 	@find . -type f -name '*.so' -exec rm {} +   # Remove recursively *.so files
 	@rm -f $(GOPATH)/bin/$(PROGRAM_NAME) || true
