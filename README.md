@@ -202,8 +202,6 @@ The following software programs need to be installed:
     go-hello-cgo-static
     ```
 
-    FIXME: This requires `${GIT_REPOSITORY_DIR}/lib/libgreeter.so` from `make build`.
-
     ```console
     export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${GIT_REPOSITORY_DIR}/lib"
 
