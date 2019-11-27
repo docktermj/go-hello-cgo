@@ -180,64 +180,72 @@ The following software programs need to be installed:
 
 ### Test DEB package on Ubuntu
 
-1. Determine if `go-hello-world` is installed.
+1. Determine if `go-hello-cgo` is installed.
    Example:
 
     ```console
-    apt list --installed | grep go-hello-world
+    apt list --installed | grep go-hello-cgo
     ```
 
-1. :pencil2: Install `go-hello-world`.
+1. :pencil2: Install `go-hello-cgo`.
    Example:
 
     ```console
-    cd ${GIT_REPOSITORY_DIR}/target
-    sudo apt install ./go-hello-world_0.0.0_amd64.deb
+    cd ${GIT_REPOSITORY_DIR}/target/linux
+    sudo apt install ./go-hello-cgo_0.0.0_amd64.deb
     ```
 
 1. Run command.
    Example:
 
     ```console
-    go-hello-world
+    go-hello-cgo-static
     ```
 
-1. Remove `go-hello-world` from system.
+    ```console
+    go-hello-cgo-dynamic
+    ```
+
+1. Remove `go-hello-cgo` from system.
    Example:
 
     ```console
-    sudo apt-get remove go-hello-world
+    sudo apt-get remove go-hello-cgo
     ```
 
 ### Test RPM package on Centos
 
-1. Determine if `go-hello-world` is installed.
+1. Determine if `go-hello-cgo` is installed.
    Example:
 
     ```console
-    yum list installed | grep go-hello-world
+    yum list installed | grep go-hello-cgo
     ```
 
-1. :pencil2: Install `go-hello-world`.
+1. :pencil2: Install `go-hello-cgo`.
    Example:
 
     ```console
-    cd ${GIT_REPOSITORY_DIR}/target
-    sudo yum install ./go-hello-world_0.0.0_amd64.rpm
+    cd ${GIT_REPOSITORY_DIR}/target/linux
+    sudo yum install ./go-hello-cgo_0.0.0_amd64.rpm
     ```
 
 1. Run command.
    Example:
 
     ```console
-    go-hello-world
+    go-hello-cgo-static
     ```
 
-1. Remove `go-hello-world` from system.
+    ```console
+    go-hello-cgo-dynamic
+    ```
+
+1. Remove `go-hello-cgo` from system.
    Example:
 
     ```console
-    sudo yum remove go-hello-world
+    sudo yum remove go-hello-cgo
     ```
 
 ## References
