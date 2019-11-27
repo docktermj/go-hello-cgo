@@ -168,6 +168,14 @@ The following software programs need to be installed:
 
 ### Package RPM and DEB files
 
+1. **FIXME:**  The Dockerfile isn't quite right.
+   As a work-around, run the following first:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make build
+    ```
+
 1. Use make target to run a docker images that builds RPM and DEB files.
    Example:
 
