@@ -160,7 +160,7 @@ The following software programs need to be installed:
    Example:
 
     ```console
-    cd ${REPOSITORY_DIR}
+    cd ${GIT_REPOSITORY_DIR}
     make clean
     ```
 
