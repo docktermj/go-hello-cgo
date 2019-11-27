@@ -203,8 +203,6 @@ The following software programs need to be installed:
     ```
 
     ```console
-    export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${GIT_REPOSITORY_DIR}/lib"
-
     go-hello-cgo-dynamic
     ```
 
