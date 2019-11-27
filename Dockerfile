@@ -91,7 +91,9 @@ RUN fpm \
   --version ${BUILD_VERSION} \
   --iteration ${BUILD_ITERATION} \
   /output/linux/go-hello-cgo-dynamic=/usr/bin/go-hello-cgo-dynamic \
-  /output/linux/go-hello-cgo-static=/usr/bin/go-hello-cgo-static
+  /output/linux/go-hello-cgo-static=/usr/bin/go-hello-cgo-static \
+  ${GOPATH}/src/${GO_PACKAGE_NAME}/lib/libgreeter.so=/usr/lib/libgreeter.so
+
 
 # DEB package.
 
@@ -103,7 +105,8 @@ RUN fpm \
   --version ${BUILD_VERSION} \
   --iteration ${BUILD_ITERATION} \
   /output/linux/go-hello-cgo-dynamic=/usr/bin/go-hello-cgo-dynamic \
-  /output/linux/go-hello-cgo-static=/usr/bin/go-hello-cgo-static
+  /output/linux/go-hello-cgo-static=/usr/bin/go-hello-cgo-static \
+  ${GOPATH}/src/${GO_PACKAGE_NAME}/lib/libgreeter.so=/usr/lib/libgreeter.so
 
 
 # --- Epilog ------------------------------------------------------------------

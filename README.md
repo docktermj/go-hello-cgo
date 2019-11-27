@@ -97,7 +97,7 @@ The following software programs need to be installed:
 
 ### Run linux dynamic file
 
-1. :pencil2: Set Go environment variables.
+1. Set Go environment variables.
    Example:
 
     ```console
@@ -202,7 +202,11 @@ The following software programs need to be installed:
     go-hello-cgo-static
     ```
 
+    FIXME: This requires `${GIT_REPOSITORY_DIR}/lib/libgreeter.so` from `make build`.
+
     ```console
+    export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${GIT_REPOSITORY_DIR}/lib"
+
     go-hello-cgo-dynamic
     ```
 
