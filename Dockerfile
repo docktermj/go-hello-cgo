@@ -20,6 +20,8 @@ RUN yum -y install \
     wget \
  && yum -y install \
     gcc \
+    glibc-static \
+    libseccomp-static \
     make \
     rpm-build \
     ruby-devel \
@@ -62,8 +64,7 @@ RUN mkdir ~/.ssh \
 
 # Create Linux binary.
 
-RUN make dependencies \
- && make build
+RUN make build
 
 # Copy binaries to output.
 
