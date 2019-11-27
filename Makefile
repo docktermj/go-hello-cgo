@@ -143,7 +143,7 @@ build-wip: target/darwin/xxx
 
 .PHONY: test
 test:
-	@go test $(GO_PACKAGE_NAME)/...
+	go test $(GO_PACKAGE_NAME)/...
 
 # -----------------------------------------------------------------------------
 # Package

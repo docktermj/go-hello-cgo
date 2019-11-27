@@ -148,8 +148,10 @@ The following software programs need to be installed:
     or
 
     ```console
+    export CGO_CFLAGS="-I${GIT_REPOSITORY_DIR}/lib"
+    export CGO_LDFLAGS="-L${GIT_REPOSITORY_DIR}/lib -lgreeter"
     cd ${GIT_REPOSITORY_DIR}
-    go test
+    go test github.com/docktermj/go-hello-cgo/...
     ```
 
 ### Cleanup
