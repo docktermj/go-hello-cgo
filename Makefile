@@ -2,7 +2,9 @@
 
 # PROGRAM_NAME is the name of the GIT repository.
 PROGRAM_NAME := $(shell basename `git rev-parse --show-toplevel`)
-TARGET_DIRECTORY := ./target
+MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+MAKEFILE_DIRECTORY := $(dir $(MAKEFILE_PATH))
+TARGET_DIRECTORY := $(MAKEFILE_DIRECTORY)/target
 DOCKER_CONTAINER_NAME := $(PROGRAM_NAME)
 DOCKER_IMAGE_NAME := local/$(PROGRAM_NAME)
 BUILD_VERSION := $(shell git describe --always --tags --abbrev=0 --dirty)
@@ -19,7 +21,16 @@ CC=gcc
 default: help
 
 # -----------------------------------------------------------------------------
-# C
+# Export environment variables.
+# -----------------------------------------------------------------------------
+
+.EXPORT_ALL_VARIABLES:
+
+CGO_CFLAGS = -I$(MAKEFILE_DIRECTORY)lib
+CGO_LDFLAGS = -L$(MAKEFILE_DIRECTORY)lib -lgreeter
+
+# -----------------------------------------------------------------------------
+# Make files
 # -----------------------------------------------------------------------------
 
 lib/greeter.o: lib/greeter.c lib/greeter.h
@@ -27,6 +38,7 @@ lib/greeter.o: lib/greeter.c lib/greeter.h
 	  -c \
 	  -fPIC \
 	  -o lib/greeter.o \
+	  -static \
 	  lib/greeter.c
 
 
@@ -35,7 +47,13 @@ lib/greeter2.o: lib/greeter2.c lib/greeter2.h
 	  -c \
 	  -fPIC \
 	  -o lib/greeter2.o \
+	  -static \
 	  lib/greeter2.c
+
+
+lib/libgreeter.a: lib/greeter.o lib/greeter2.o
+	@ar ruv lib/libgreeter.a lib/greeter.o lib/greeter2.o
+	@ranlib lib/libgreeter.a
 
 
 lib/libgreeter.so: lib/greeter.o lib/greeter2.o
@@ -44,6 +62,58 @@ lib/libgreeter.so: lib/greeter.o lib/greeter2.o
 	  -o lib/libgreeter.so \
 	  lib/greeter.o \
 	  lib/greeter2.o
+
+
+target/linux/go-hello-cgo-static: lib/libgreeter.a
+	@go build \
+	  -a \
+	  -ldflags \
+	    "-X main.programName=${PROGRAM_NAME} \
+	     -X main.buildVersion=${BUILD_VERSION} \
+	     -X main.buildIteration=${BUILD_ITERATION} \
+	     -extldflags \"-static\" \
+	    " \
+	  ${GO_PACKAGE_NAME}
+	@mkdir -p $(TARGET_DIRECTORY)/linux || true
+	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux/go-hello-cgo-static
+
+
+target/linux/go-hello-cgo-dynamic: lib/libgreeter.so
+	@go build \
+	  -a \
+	  -ldflags \
+	    "-X main.programName=${PROGRAM_NAME} \
+	     -X main.buildVersion=${BUILD_VERSION} \
+	     -X main.buildIteration=${BUILD_ITERATION} \
+	    " \
+	  ${GO_PACKAGE_NAME}
+	@mkdir -p $(TARGET_DIRECTORY)/linux || true
+	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux/go-hello-cgo-dynamic
+
+
+target/darwin/xxx: lib/libgreeter.a
+	@GOOS=darwin GOARCH=amd64 go build \
+	  -ldflags \
+	    "-X main.programName=${PROGRAM_NAME} \
+	     -X main.buildVersion=${BUILD_VERSION} \
+	     -X main.buildIteration=${BUILD_ITERATION} \
+	    " \
+	  $(GO_PACKAGE_NAME)
+	@mkdir -p $(TARGET_DIRECTORY)/darwin || true
+	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/darwin
+
+
+target/windows/xxx: lib/libgreeter.a
+	@GOOS=windows GOARCH=amd64 go build \
+	  -ldflags \
+	    "-X main.programName=${PROGRAM_NAME} \
+	     -X main.buildVersion=${BUILD_VERSION} \
+	     -X main.buildIteration=${BUILD_ITERATION} \
+	    " \
+	  $(GO_PACKAGE_NAME)
+	@mkdir -p $(TARGET_DIRECTORY)/windows || true
+	@mv $(PROGRAM_NAME).exe $(TARGET_DIRECTORY)/windows
+
 
 # -----------------------------------------------------------------------------
 # Build
@@ -58,49 +128,14 @@ dependencies:
 
 
 .PHONY: build
-build: build-linux
+build: target/linux/go-hello-cgo-static target/linux/go-hello-cgo-dynamic
 
 
-.PHONY: build-linux
-build-linux: lib/libgreeter.so
-	@go build \
-	  -a \
-	  -ldflags \
-	    "-X main.programName=${PROGRAM_NAME} \
-	     -X main.buildVersion=${BUILD_VERSION} \
-	     -X main.buildIteration=${BUILD_ITERATION} \
-	    " \
-	  ${GO_PACKAGE_NAME}
-	@mkdir -p $(TARGET_DIRECTORY)/linux || true
-	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux
+# Work-in-progress.
 
+.PHONY: build-wip
+build-wip: target/darwin/xxx
 
-.PHONY: build-macos
-build-macos:
-	@GOOS=darwin GOARCH=amd64 go build \
-	  -ldflags \
-	    "-X main.programName=${PROGRAM_NAME} \
-	     -X main.buildVersion=${BUILD_VERSION} \
-	     -X main.buildIteration=${BUILD_ITERATION} \
-	     -X github.com/docktermj/go-hello-world-module.helloName=${HELLO_NAME} \
-	    " \
-	  $(GO_PACKAGE_NAME)
-	@mkdir -p $(TARGET_DIRECTORY)/darwin || true
-	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/darwin
-
-
-.PHONY: build-windows
-build-windows:
-	@GOOS=windows GOARCH=amd64 go build \
-	  -ldflags \
-	    "-X main.programName=${PROGRAM_NAME} \
-	     -X main.buildVersion=${BUILD_VERSION} \
-	     -X main.buildIteration=${BUILD_ITERATION} \
-	     -X github.com/docktermj/go-hello-world-module.helloName=${HELLO_NAME} \
-	    " \
-	  $(GO_PACKAGE_NAME)
-	@mkdir -p $(TARGET_DIRECTORY)/windows || true
-	@mv $(PROGRAM_NAME).exe $(TARGET_DIRECTORY)/windows
 
 # -----------------------------------------------------------------------------
 # Test
@@ -108,7 +143,7 @@ build-windows:
 
 .PHONY: test
 test:
-	@go test $(GO_PACKAGE_NAME)/...
+	go test $(GO_PACKAGE_NAME)/...
 
 # -----------------------------------------------------------------------------
 # Package
@@ -136,8 +171,13 @@ docker-package:
 # Run
 # -----------------------------------------------------------------------------
 
-run:
-	@target/linux/go-hello-cgo
+.PHONY: run-linux-dynamic
+run-linux-dynamic:
+	@target/linux/go-hello-cgo-dynamic
+	
+.PHONY: run-linux-static
+run-linux-static:
+	@target/linux/go-hello-cgo-static
 
 # -----------------------------------------------------------------------------
 # Utility targets
@@ -157,6 +197,7 @@ clean:
 	@go clean -cache
 	@docker rm --force $(DOCKER_CONTAINER_NAME) || true
 	@rm -rf $(TARGET_DIRECTORY) || true
+	@find . -type f -name '*.a' -exec rm {} +    # Remove recursively *.o files
 	@find . -type f -name '*.o' -exec rm {} +    # Remove recursively *.o files
 	@find . -type f -name '*.so' -exec rm {} +   # Remove recursively *.so files
 	@rm -f $(GOPATH)/bin/$(PROGRAM_NAME) || true
