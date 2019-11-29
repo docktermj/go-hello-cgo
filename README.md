@@ -240,7 +240,7 @@ The following software programs need to be installed:
     ```console
     go-hello-cgo-dynamic
     ```
-
+    s
 1. Remove `go-hello-cgo` from system.
    Example:
 
@@ -255,3 +255,6 @@ The following software programs need to be installed:
     1. The reason for using `go build -a` is to avoid caching c binary files.
 1. [Exploring shared objects in Go](https://blog.ksub.org/bytes/2017/02/12/exploring-shared-objects-in-go/)
 1. [Linking golang statically](https://blog.hashbangbash.com/2014/04/linking-golang-statically/)
+1. [Darwin: Cannot compile static binary](https://stackoverflow.com/questions/3801011/ld-library-not-found-for-lcrt0-o-on-osx-10-6-with-gcc-clang-static-flag)
+1. [Can't static link /usr/lib/libSystem.B.dylib](https://github.com/golang/go/issues/17490)
+1. [GOOS and GOARCH list](https://github.com/golang/go/blob/master/src/go/build/syslist.go)
