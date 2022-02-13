@@ -44,7 +44,7 @@ The following software programs need to be installed:
     ```console
     export GIT_ACCOUNT=docktermj
     export GIT_REPOSITORY=go-hello-cgo
-    export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
+    export GIT_ACCOUNT_DIR=${GOPATH}/src/github.com/${GIT_ACCOUNT}
     export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
     ```
 
@@ -240,7 +240,7 @@ The following software programs need to be installed:
     ```console
     go-hello-cgo-dynamic
     ```
-    s
+
 1. Remove `go-hello-cgo` from system.
    Example:
 
