@@ -128,12 +128,33 @@ The following software programs need to be installed:
    Example:
 
     ```console
-    $ file ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-dynamic
-    /home/senzing/docktermj.git/go-hello-cgo/target/linux/go-hello-cgo-dynamic: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/l, for GNU/Linux 3.2.0, BuildID[sha1]=161c513fec653ec60361fab0881c4a02034abdfc, not stripped
+    file ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-dynamic
     ```
 
+    Response:
+
     ```console
-    $ ldd ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-dynamic
+    target/linux/go-hello-cgo-dynamic:
+    ELF 64-bit LSB executable,
+    x86-64,
+    version 1 (SYSV),
+    dynamically linked,
+    interpreter /lib64/l,
+    for GNU/Linux 3.2.0,
+    BuildID[sha1]=161c513fec653ec60361fab0881c4a02034abdfc,
+    not stripped
+    ```
+
+1. Verify file is dynamic, again.
+   Example:
+
+    ```console
+    ldd ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-dynamic
+    ```
+
+    Response:
+
+    ```console
     linux-vdso.so.1 (0x00007fffa2bd5000)
     libgreeter.so => /home/username/docktermj.git/go-hello-cgo/lib/libgreeter.so (0x00007f41961d0000)
     libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f4195fb1000)
