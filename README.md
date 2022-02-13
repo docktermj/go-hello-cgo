@@ -44,7 +44,7 @@ The following software programs need to be installed:
     ```console
     export GIT_ACCOUNT=docktermj
     export GIT_REPOSITORY=go-hello-cgo
-    export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
+    export GIT_ACCOUNT_DIR=${GOPATH}/src/github.com/${GIT_ACCOUNT}
     export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
     ```
 
@@ -72,8 +72,20 @@ The following software programs need to be installed:
    Example:
 
     ```console
-    $ file ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-static
-    /home/senzing/docktermj.git/go-hello-cgo/target/linux/go-hello-cgo-static: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, for GNU/Linux 3.2.0, BuildID[sha1]=53a6e1c8f414b71a90f049bd7abc26e7e820389f, not stripped
+    file ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-static
+    ```
+
+    Response (formatted):
+
+    ```console
+    /home/senzing/docktermj.git/go-hello-cgo/target/linux/go-hello-cgo-static:
+    ELF 64-bit LSB executable,
+    x86-64,
+    version 1 (GNU/Linux),
+    statically linked,
+    for GNU/Linux 3.2.0,
+    BuildID[sha1]=53a6e1c8f414b71a90f049bd7abc26e7e820389f,
+    not stripped
     ```
 
     ```console
