@@ -139,9 +139,9 @@ The following software programs need to be installed:
     x86-64,
     version 1 (SYSV),
     dynamically linked,
-    interpreter /lib64/l,
+    interpreter /lib64/ld-linux-x86-64.so.2,
+    BuildID[sha1]=a5d5a0fe2e998dc5bfe5a56bb904f2862e6319e5,
     for GNU/Linux 3.2.0,
-    BuildID[sha1]=161c513fec653ec60361fab0881c4a02034abdfc,
     not stripped
     ```
 
@@ -155,11 +155,10 @@ The following software programs need to be installed:
     Response:
 
     ```console
-    linux-vdso.so.1 (0x00007fffa2bd5000)
-    libgreeter.so => /home/username/docktermj.git/go-hello-cgo/lib/libgreeter.so (0x00007f41961d0000)
-    libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f4195fb1000)
-    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f4195bc0000)
-    /lib64/ld-linux-x86-64.so.2 (0x00007f41963d2000)
+    linux-vdso.so.1 (0x00007ffe3f9aa000)
+    libgreeter.so => /home/senzing/go/src/github.com/docktermj/go-hello-cgo/lib/libgreeter.so (0x00007f3c1dbf6000)
+    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f3c1d9b9000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007f3c1dbfd000)
     ```
 
 1. Run.
