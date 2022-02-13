@@ -82,7 +82,7 @@ target/linux/go-hello-cgo-dynamic: lib/libgreeter.so
 target/linux/go-hello-cgo-static: lib/libgreeter.a
 	@GOOS=linux GOARCH=amd64 \
 	  go build \
-	    -a \  
+	    -a \
 	    -ldflags \
 	      "-X main.programName=${PROGRAM_NAME} \
 	       -X main.buildVersion=${BUILD_VERSION} \
@@ -107,17 +107,17 @@ target/darwin/go-hello-cgo-dynamic: lib/libgreeter.so
 	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/darwin/go-hello-cgo-dynamic
 
 
-target/darwin/go-hello-cgo-static: lib/libgreeter.a
-	@GOOS=darwin GOARCH=amd64 \
-	  go build \
-	    -ldflags \
-	      "-X main.programName=${PROGRAM_NAME} \
-	       -X main.buildVersion=${BUILD_VERSION} \
-	       -X main.buildIteration=${BUILD_ITERATION} \
-	      " \
-	    $(GO_PACKAGE_NAME)
-	@mkdir -p $(TARGET_DIRECTORY)/darwin || true
-	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/darwin/go-hello-cgo-static
+#target/darwin/go-hello-cgo-static: lib/libgreeter.a
+#	@GOOS=darwin GOARCH=amd64 \
+#	  go build \
+#	    -ldflags \
+#	      "-X main.programName=${PROGRAM_NAME} \
+#	       -X main.buildVersion=${BUILD_VERSION} \
+#	       -X main.buildIteration=${BUILD_ITERATION} \
+#	      " \
+#	    $(GO_PACKAGE_NAME)
+#	@mkdir -p $(TARGET_DIRECTORY)/darwin || true
+#	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/darwin/go-hello-cgo-static
 
 # ---- Windows ----------------------------------------------------------------
 
@@ -159,15 +159,16 @@ dependencies:
 
 
 .PHONY: build
-build: build-linux build-darwin
+#build: build-linux build-darwin
+build: build-linux
 
 
 .PHONY: build-linux
 build: target/linux/go-hello-cgo-static target/linux/go-hello-cgo-dynamic
 
 
-.PHONY: build-darwin
-build-darwin: target/darwin/go-hello-cgo-static target/darwin/go-hello-cgo-dynamic
+#.PHONY: build-darwin
+#build-darwin: target/darwin/go-hello-cgo-static target/darwin/go-hello-cgo-dynamic
 
 
 .PHONY: build-windows
