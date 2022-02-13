@@ -1,5 +1,8 @@
 FROM centos:7.7.1908
 
+
+TODO:  Use https://github.com/docktermj/go-hello-world/blob/master/Dockerfile
+
 ENV REFRESHED_AT 2019-11-16
 
 # --- Install system packages -------------------------------------------------

@@ -152,11 +152,11 @@ The following software programs need to be installed:
     ldd ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-dynamic
     ```
 
-    Response:
+    Response (formatted):
 
     ```console
     linux-vdso.so.1 (0x00007ffe3f9aa000)
-    libgreeter.so => /home/senzing/go/src/github.com/docktermj/go-hello-cgo/lib/libgreeter.so (0x00007f3c1dbf6000)
+    libgreeter.so => .../docktermj/go-hello-cgo/lib/libgreeter.so (0x00007f3c1dbf6000)
     libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f3c1d9b9000)
     /lib64/ld-linux-x86-64.so.2 (0x00007f3c1dbfd000)
     ```
