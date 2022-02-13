@@ -78,18 +78,26 @@ The following software programs need to be installed:
     Response (formatted):
 
     ```console
-    /home/senzing/docktermj.git/go-hello-cgo/target/linux/go-hello-cgo-static:
+    target/linux/go-hello-cgo-static:
     ELF 64-bit LSB executable,
     x86-64,
     version 1 (GNU/Linux),
     statically linked,
+    BuildID[sha1]=329d8eb6a8d99757c955965da44027e144281ee9,
     for GNU/Linux 3.2.0,
-    BuildID[sha1]=53a6e1c8f414b71a90f049bd7abc26e7e820389f,
     not stripped
     ```
 
+1. Verify file is static, again.
+   Example:
+
     ```console
-    $ ldd ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-static
+    ldd ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-static
+    ```
+
+    Response:
+
+    ```console
     not a dynamic executable
     ```
 
