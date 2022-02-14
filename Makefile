@@ -6,10 +6,11 @@ MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 MAKEFILE_DIRECTORY := $(dir $(MAKEFILE_PATH))
 TARGET_DIRECTORY := $(MAKEFILE_DIRECTORY)/target
 DOCKER_CONTAINER_NAME := $(PROGRAM_NAME)
-DOCKER_IMAGE_NAME := local/$(PROGRAM_NAME)
+DOCKER_IMAGE_NAME := dockter/$(PROGRAM_NAME)
+DOCKER_BUILD_IMAGE_NAME := $(DOCKER_IMAGE_NAME)-build
 BUILD_VERSION := $(shell git describe --always --tags --abbrev=0 --dirty)
 BUILD_TAG := $(shell git describe --always --tags --abbrev=0)
-BUILD_ITERATION := $(shell git log $(BUILD_TAG)..HEAD --oneline | wc -l)
+BUILD_ITERATION := $(shell git log $(BUILD_TAG)..HEAD --oneline | wc -l | sed 's/^ *//')
 GIT_REMOTE_URL := $(shell git config --get remote.origin.url)
 GO_PACKAGE_NAME := $(shell echo $(GIT_REMOTE_URL) | sed -e 's|^git@github.com:|github.com/|' -e 's|\.git$$||')
 
@@ -65,7 +66,9 @@ lib/libgreeter.so: lib/greeter.o lib/greeter2.o
 
 
 target/linux/go-hello-cgo-static: lib/libgreeter.a
-	@go build \
+	@GOOS=linux \
+	GOARCH=amd64 \
+	go build \
 	  -a \
 	  -ldflags \
 	    "-X main.programName=${PROGRAM_NAME} \
@@ -79,7 +82,9 @@ target/linux/go-hello-cgo-static: lib/libgreeter.a
 
 
 target/linux/go-hello-cgo-dynamic: lib/libgreeter.so
-	@go build \
+	@GOOS=linux \
+	GOARCH=amd64 \
+	go build \
 	  -a \
 	  -ldflags \
 	    "-X main.programName=${PROGRAM_NAME} \
@@ -92,7 +97,9 @@ target/linux/go-hello-cgo-dynamic: lib/libgreeter.so
 
 
 target/darwin/xxx: lib/libgreeter.a
-	@GOOS=darwin GOARCH=amd64 go build \
+	@GOOS=darwin \
+	GOARCH=amd64 \
+	go build \
 	  -ldflags \
 	    "-X main.programName=${PROGRAM_NAME} \
 	     -X main.buildVersion=${BUILD_VERSION} \
@@ -104,16 +111,17 @@ target/darwin/xxx: lib/libgreeter.a
 
 
 target/windows/xxx: lib/libgreeter.a
-	@GOOS=windows GOARCH=amd64 go build \
+	@GOOS=windows \
+	GOARCH=amd64 \
+	go build \
 	  -ldflags \
 	    "-X main.programName=${PROGRAM_NAME} \
 	     -X main.buildVersion=${BUILD_VERSION} \
 	     -X main.buildIteration=${BUILD_ITERATION} \
 	    " \
-	  $(GO_PACKAGE_NAME)
+	  -o $(GO_PACKAGE_NAME).exe
 	@mkdir -p $(TARGET_DIRECTORY)/windows || true
-	@mv $(PROGRAM_NAME).exe $(TARGET_DIRECTORY)/windows
-
+	@mv $(GO_PACKAGE_NAME).exe $(TARGET_DIRECTORY)/windows
 
 # -----------------------------------------------------------------------------
 # Build
@@ -136,37 +144,54 @@ build: target/linux/go-hello-cgo-static target/linux/go-hello-cgo-dynamic
 .PHONY: build-wip
 build-wip: target/darwin/xxx
 
-
 # -----------------------------------------------------------------------------
 # Test
 # -----------------------------------------------------------------------------
 
 .PHONY: test
 test:
-	go test $(GO_PACKAGE_NAME)/...
+	@go test $(GO_PACKAGE_NAME)/...
+
+# -----------------------------------------------------------------------------
+# docker-build
+#  - https://docs.docker.com/engine/reference/commandline/build/
+# -----------------------------------------------------------------------------
+
+.PHONY: docker-build
+docker-build:
+	@docker build \
+		--build-arg BUILD_ITERATION=$(BUILD_ITERATION) \
+		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
+		--build-arg GO_PACKAGE_NAME=$(GO_PACKAGE_NAME) \
+		--build-arg PROGRAM_NAME=$(PROGRAM_NAME) \
+		--file Dockerfile \
+		--tag $(DOCKER_IMAGE_NAME) \
+		--tag $(DOCKER_IMAGE_NAME):$(BUILD_VERSION) \
+		.
+
+
+.PHONY: docker-build-package
+docker-build-package:
+	@docker build \
+		--build-arg BUILD_ITERATION=$(BUILD_ITERATION) \
+		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
+		--build-arg GO_PACKAGE_NAME=$(GO_PACKAGE_NAME) \
+		--build-arg PROGRAM_NAME=$(PROGRAM_NAME) \
+		--file package.Dockerfile \
+		--no-cache \
+		--tag $(DOCKER_BUILD_IMAGE_NAME) \
+		.
 
 # -----------------------------------------------------------------------------
 # Package
 # -----------------------------------------------------------------------------
 
 .PHONY: package
-package: docker-package
+package: docker-build-package
 	@mkdir -p $(TARGET_DIRECTORY) || true
-	@CONTAINER_ID=$$(docker create $(DOCKER_IMAGE_NAME)); \
+	@CONTAINER_ID=$$(docker create $(DOCKER_BUILD_IMAGE_NAME)); \
 	docker cp $$CONTAINER_ID:/output/. $(TARGET_DIRECTORY)/; \
 	docker rm -v $$CONTAINER_ID
-
-
-.PHONY: docker-package
-docker-package:
-	@docker build \
-		--build-arg PROGRAM_NAME=$(PROGRAM_NAME) \
-		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
-		--build-arg BUILD_ITERATION=$(BUILD_ITERATION) \
-		--build-arg GO_PACKAGE_NAME=$(GO_PACKAGE_NAME) \
-		--file package.Dockerfile \
-		--tag $(DOCKER_IMAGE_NAME) \
-		.
 
 # -----------------------------------------------------------------------------
 # Run
@@ -197,6 +222,7 @@ docker-run:
 clean:
 	@go clean -cache
 	@docker rm --force $(DOCKER_CONTAINER_NAME) || true
+	@docker rmi --force $(DOCKER_IMAGE_NAME) $(DOCKER_BUILD_IMAGE_NAME) || true	
 	@rm -rf $(TARGET_DIRECTORY) || true
 	@find . -type f -name '*.a' -exec rm {} +    # Remove recursively *.o files
 	@find . -type f -name '*.o' -exec rm {} +    # Remove recursively *.o files
