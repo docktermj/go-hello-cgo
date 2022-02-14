@@ -9,7 +9,7 @@ DOCKER_CONTAINER_NAME := $(PROGRAM_NAME)
 DOCKER_IMAGE_NAME := local/$(PROGRAM_NAME)
 BUILD_VERSION := $(shell git describe --always --tags --abbrev=0 --dirty)
 BUILD_TAG := $(shell git describe --always --tags --abbrev=0)
-BUILD_ITERATION := $(shell git log $(BUILD_TAG)..HEAD --oneline | wc -l)
+BUILD_ITERATION := $(shell git log $(BUILD_TAG)..HEAD --oneline | wc -l | sed 's/ //g')
 GIT_REMOTE_URL := $(shell git config --get remote.origin.url)
 GO_PACKAGE_NAME := $(shell echo $(GIT_REMOTE_URL) | sed -e 's|^git@github.com:|github.com/|' -e 's|\.git$$||')
 
@@ -32,6 +32,8 @@ CGO_LDFLAGS = -L$(MAKEFILE_DIRECTORY)lib -lgreeter
 # -----------------------------------------------------------------------------
 # Make files
 # -----------------------------------------------------------------------------
+
+# ---- greeter ----------------------------------------------------------------
 
 lib/greeter.o: lib/greeter.c lib/greeter.h
 	@$(CC) \
@@ -63,36 +65,40 @@ lib/libgreeter.so: lib/greeter.o lib/greeter2.o
 	  lib/greeter.o \
 	  lib/greeter2.o
 
+# ---- Linux ------------------------------------------------------------------
 
 target/linux/go-hello-cgo-static: lib/libgreeter.a
-	@go build \
-	  -a \
-	  -ldflags \
-	    "-X main.programName=${PROGRAM_NAME} \
-	     -X main.buildVersion=${BUILD_VERSION} \
-	     -X main.buildIteration=${BUILD_ITERATION} \
-	     -extldflags \"-static\" \
-	    " \
-	  ${GO_PACKAGE_NAME}
+	@GOOS=linux GOARCH=amd64 \
+		go build \
+			-a \
+			-ldflags "\
+				-X main.programName=${PROGRAM_NAME} \
+				-X main.buildVersion=${BUILD_VERSION} \
+				-X main.buildIteration=${BUILD_ITERATION} \
+				-extldflags \"-static\" \
+			" \
+			${GO_PACKAGE_NAME}
 	@mkdir -p $(TARGET_DIRECTORY)/linux || true
 	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux/go-hello-cgo-static
 
 
 target/linux/go-hello-cgo-dynamic: lib/libgreeter.so
-	@go build \
-	  -a \
-	  -ldflags \
-	    "-X main.programName=${PROGRAM_NAME} \
-	     -X main.buildVersion=${BUILD_VERSION} \
-	     -X main.buildIteration=${BUILD_ITERATION} \
-	    " \
-	  ${GO_PACKAGE_NAME}
+	@GOOS=linux GOARCH=amd64 \
+		go build \
+			-a \
+			-ldflags "\
+				-X main.programName=${PROGRAM_NAME} \
+				-X main.buildVersion=${BUILD_VERSION} \
+				-X main.buildIteration=${BUILD_ITERATION} \
+	    	" \
+			${GO_PACKAGE_NAME}
 	@mkdir -p $(TARGET_DIRECTORY)/linux || true
 	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux/go-hello-cgo-dynamic
 
 
 target/darwin/xxx: lib/libgreeter.a
-	@GOOS=darwin GOARCH=amd64 go build \
+	@GOOS=darwin GOARCH=amd64 \
+		go build \
 	  -ldflags \
 	    "-X main.programName=${PROGRAM_NAME} \
 	     -X main.buildVersion=${BUILD_VERSION} \
