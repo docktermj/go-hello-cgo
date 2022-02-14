@@ -110,8 +110,8 @@ LABEL Name="dockter/go-hello-cgo" \
 
 # Copy files from prior step.
 
-COPY --from=go_builder "/output/linux/go-hello-cgo-dynamic" "/output/linux/go-hello-cgo-dynamic"
-COPY --from=go_builder "/output/linux/go-hello-cgo-static"  "/output/linux/go-hello-cgo-static"
-COPY --from=fpm_builder "/output/go-hello-cgo-*"          "/output/"
+COPY --from=go_builder  "/output/linux/go-hello-cgo-dynamic" "/output/linux/go-hello-cgo-dynamic"
+COPY --from=go_builder  "/output/linux/go-hello-cgo-static"  "/output/linux/go-hello-cgo-static"
+COPY --from=fpm_builder "/output/go-hello-cgo-*"             "/output/linux/"
 
 CMD ["/bin/bash"]
