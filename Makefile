@@ -164,6 +164,7 @@ docker-package:
 		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
 		--build-arg BUILD_ITERATION=$(BUILD_ITERATION) \
 		--build-arg GO_PACKAGE_NAME=$(GO_PACKAGE_NAME) \
+		--file package.Dockerfile \
 		--tag $(DOCKER_IMAGE_NAME) \
 		.
 
