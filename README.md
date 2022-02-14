@@ -44,7 +44,7 @@ The following software programs need to be installed:
     ```console
     export GIT_ACCOUNT=docktermj
     export GIT_REPOSITORY=go-hello-cgo
-    export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
+    export GIT_ACCOUNT_DIR=${GOPATH}/src/github.com/${GIT_ACCOUNT}
     export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
     ```
 
@@ -72,12 +72,32 @@ The following software programs need to be installed:
    Example:
 
     ```console
-    $ file ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-static
-    /home/senzing/docktermj.git/go-hello-cgo/target/linux/go-hello-cgo-static: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, for GNU/Linux 3.2.0, BuildID[sha1]=53a6e1c8f414b71a90f049bd7abc26e7e820389f, not stripped
+    file ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-static
     ```
 
+    Response (formatted):
+
     ```console
-    $ ldd ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-static
+    target/linux/go-hello-cgo-static:
+    ELF 64-bit LSB executable,
+    x86-64,
+    version 1 (GNU/Linux),
+    statically linked,
+    BuildID[sha1]=329d8eb6a8d99757c955965da44027e144281ee9,
+    for GNU/Linux 3.2.0,
+    not stripped
+    ```
+
+1. Verify file is static, again.
+   Example:
+
+    ```console
+    ldd ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-static
+    ```
+
+    Response:
+
+    ```console
     not a dynamic executable
     ```
 
@@ -108,17 +128,37 @@ The following software programs need to be installed:
    Example:
 
     ```console
-    $ file ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-dynamic
-    /home/senzing/docktermj.git/go-hello-cgo/target/linux/go-hello-cgo-dynamic: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/l, for GNU/Linux 3.2.0, BuildID[sha1]=161c513fec653ec60361fab0881c4a02034abdfc, not stripped
+    file ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-dynamic
     ```
 
+    Response:
+
     ```console
-    $ ldd ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-dynamic
-    linux-vdso.so.1 (0x00007fffa2bd5000)
-    libgreeter.so => /home/username/docktermj.git/go-hello-cgo/lib/libgreeter.so (0x00007f41961d0000)
-    libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f4195fb1000)
-    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f4195bc0000)
-    /lib64/ld-linux-x86-64.so.2 (0x00007f41963d2000)
+    target/linux/go-hello-cgo-dynamic:
+    ELF 64-bit LSB executable,
+    x86-64,
+    version 1 (SYSV),
+    dynamically linked,
+    interpreter /lib64/ld-linux-x86-64.so.2,
+    BuildID[sha1]=a5d5a0fe2e998dc5bfe5a56bb904f2862e6319e5,
+    for GNU/Linux 3.2.0,
+    not stripped
+    ```
+
+1. Verify file is dynamic, again.
+   Example:
+
+    ```console
+    ldd ${GIT_REPOSITORY_DIR}/target/linux/go-hello-cgo-dynamic
+    ```
+
+    Response (formatted):
+
+    ```console
+    linux-vdso.so.1 (0x00007ffe3f9aa000)
+    libgreeter.so => .../docktermj/go-hello-cgo/lib/libgreeter.so (0x00007f3c1dbf6000)
+    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f3c1d9b9000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007f3c1dbfd000)
     ```
 
 1. Run.
