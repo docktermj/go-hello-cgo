@@ -10,7 +10,7 @@ DOCKER_IMAGE_NAME := dockter/$(PROGRAM_NAME)
 DOCKER_BUILD_IMAGE_NAME := $(DOCKER_IMAGE_NAME)-build
 BUILD_VERSION := $(shell git describe --always --tags --abbrev=0 --dirty)
 BUILD_TAG := $(shell git describe --always --tags --abbrev=0)
-BUILD_ITERATION := $(shell git log $(BUILD_TAG)..HEAD --oneline | wc -l | sed 's/ //g')
+BUILD_ITERATION := $(shell git log $(BUILD_TAG)..HEAD --oneline | wc -l | sed 's/^ *//')
 GIT_REMOTE_URL := $(shell git config --get remote.origin.url)
 GO_PACKAGE_NAME := $(shell echo $(GIT_REMOTE_URL) | sed -e 's|^git@github.com:|github.com/|' -e 's|\.git$$||')
 
@@ -135,13 +135,12 @@ dependencies:
 
 
 .PHONY: build
-build: target/linux/go-hello-cgo-static target/linux/go-hello-cgo-dynamic 
-
+build: target/linux/go-hello-cgo-static target/linux/go-hello-cgo-dynamic
 
 # Work-in-progress.
 
 .PHONY: build-wip
-build-wip: target/darwin/xxx
+build-wip: target/darwin/go-hello-cgo-dynamic
 
 # -----------------------------------------------------------------------------
 # Test
