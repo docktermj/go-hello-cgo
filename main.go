@@ -4,6 +4,7 @@ package main
 #cgo CFLAGS: -g -Wall
 #include <stdlib.h>
 #include <stdio.h>
+#include "fillbuffer.h"
 #include "greeter.h"
 #include "greeter2.h"
 */
@@ -59,4 +60,20 @@ func main() {
 	fmt.Println("and")
 
 	regreet()
+
+	// Test byte buffers and function callbacks.
+
+	//	stringBuffer := make([]byte, size)
+
+	//	C.fillbuffer(5, "Mike's message", (*C.char)(unsafe.Pointer(&stringBuffer[0])), C.ulong(len(stringBuffer)))
+
+	anint := C.int(2018)
+	message := C.CString("Mike's message")
+	//	stringBuffer := make([]byte, 5000)
+	stringBuffer := C.malloc(C.size_t(5000))
+	defer C.free(stringBuffer)
+	stringBufferLen := C.ulong(5000)
+	//	C.fillbuffer(anint, message, (*C.char)(unsafe.Pointer(&stringBuffer[0])), &stringBufferLen)
+	C.fillbuffer(anint, message, (**C.char)(stringBuffer), &stringBufferLen)
+
 }

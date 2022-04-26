@@ -34,7 +34,16 @@ CGO_LDFLAGS = -L$(MAKEFILE_DIRECTORY)lib -lgreeter
 # Make files
 # -----------------------------------------------------------------------------
 
-# ---- greeter ----------------------------------------------------------------
+# ---- C ----------------------------------------------------------------------
+
+lib/fillbuffer.o: lib/fillbuffer.c lib/fillbuffer.h
+	@$(CC) \
+	  -c \
+	  -fPIC \
+	  -o lib/fillbuffer.o \
+	  -static \
+	  lib/fillbuffer.c
+
 
 lib/greeter.o: lib/greeter.c lib/greeter.h
 	@$(CC) \
@@ -54,15 +63,16 @@ lib/greeter2.o: lib/greeter2.c lib/greeter2.h
 	  lib/greeter2.c
 
 
-lib/libgreeter.a: lib/greeter.o lib/greeter2.o
-	@ar ruv lib/libgreeter.a lib/greeter.o lib/greeter2.o
+lib/libgreeter.a: lib/greeter.o lib/greeter2.o lib/fillbuffer.o
+	@ar ruv lib/libgreeter.a lib/greeter.o lib/greeter2.o lib/fillbuffer.o
 	@ranlib lib/libgreeter.a
 
 
-lib/libgreeter.so: lib/greeter.o lib/greeter2.o
+lib/libgreeter.so: lib/greeter.o lib/greeter2.o lib/fillbuffer.o
 	@$(CC) \
 	  -shared \
 	  -o lib/libgreeter.so \
+	  lib/fillbuffer.o \
 	  lib/greeter.o \
 	  lib/greeter2.o
 
@@ -93,8 +103,8 @@ target/linux/go-hello-cgo-dynamic: lib/libgreeter.so
 				-X main.buildIteration=${BUILD_ITERATION} \
 	    	" \
 			${GO_PACKAGE_NAME}
-	@mkdir -p $(TARGET_DIRECTORY)/linux || true
-	@mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux/go-hello-cgo-dynamic
+	mkdir -p $(TARGET_DIRECTORY)/linux || true
+	mv $(PROGRAM_NAME) $(TARGET_DIRECTORY)/linux/go-hello-cgo-dynamic
 
 
 target/darwin/xxx: lib/libgreeter.a
