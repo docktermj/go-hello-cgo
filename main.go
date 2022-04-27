@@ -63,17 +63,24 @@ func main() {
 
 	// Test byte buffers and function callbacks.
 
-	//	stringBuffer := make([]byte, size)
-
-	//	C.fillbuffer(5, "Mike's message", (*C.char)(unsafe.Pointer(&stringBuffer[0])), C.ulong(len(stringBuffer)))
-
 	anint := C.int(2018)
 	message := C.CString("Mike's message")
-	//	stringBuffer := make([]byte, 5000)
-	stringBuffer := C.malloc(C.size_t(5000))
-	defer C.free(stringBuffer)
-	stringBufferLen := C.ulong(5000)
+	bufferSize := 5000
+
+	// Allocate a buffer.
+
+	stringBuffer := make([]byte, bufferSize)
+	//	stringBuffer := C.malloc(C.size_t(bufferSize))
+	//	defer C.free(stringBuffer)
+
+	// Make a pointer to the string buffer.
+
+	stringBufferPointer := (*C.char)(unsafe.Pointer(&stringBuffer[0]))
+	stringBufferLen := C.ulong(bufferSize)
+
 	//	C.fillbuffer(anint, message, (*C.char)(unsafe.Pointer(&stringBuffer[0])), &stringBufferLen)
-	C.fillbuffer(anint, message, (**C.char)(stringBuffer), &stringBufferLen)
+	C.fillbuffer(anint, message, (**C.char)(unsafe.Pointer(stringBufferPointer)), &stringBufferLen)
+	fmt.Println(string(stringBuffer))
+	fmt.Println(stringBufferLen)
 
 }
