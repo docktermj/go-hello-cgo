@@ -8,7 +8,7 @@ package main
 #include "greeter.h"
 #include "greeter2.h"
 
-extern void *(*resizeFunction)(void *ptr, size_t newSize);
+void *(*resizeFunction)(void *ptr, size_t newSize);
 */
 import "C"
 import (
@@ -42,8 +42,8 @@ func regreet() {
 	fmt.Println(string(b))
 }
 
-//export resizeByteBuffer
-func resizeByteBuffer(stringBuffer *[]byte, size uint) {
+//export resizeFunction
+func resizeFunction(ptr *C.void, size C.size_t) {
 	fmt.Println(">>> Requesting larger buffer of", size, "bytes")
 
 	newByteBuffer := make([]byte, size)
@@ -90,7 +90,7 @@ func main() {
 
 	//	C.fillbuffer(anint, message, (*C.char)(unsafe.Pointer(&stringBuffer[0])), &stringBufferLen)
 	//	C.fillbuffer(anint, message, (**C.char)(unsafe.Pointer(stringBufferPointer)), &stringBufferLen)
-	C.fillbuffer(anint, message, (**C.char)(unsafe.Pointer(stringBufferPointer)), &stringBufferLen, &resizeByteBuffer)
+	C.fillbuffer(anint, message, (**C.char)(unsafe.Pointer(stringBufferPointer)), &stringBufferLen, C.resizeFunction)
 
 	fmt.Println(string(stringBuffer))
 	fmt.Println(stringBufferLen)
